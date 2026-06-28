@@ -2,13 +2,39 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+<!-- 锁定手机缩放，强制全屏适配 -->
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>游标卡尺练习</title>
 <style>
-*{margin:0;padding:0}
-body{width:100vw;height:100vh;display:flex;background:#fff}
-#container{width:100%;height:100%}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html,body{
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #ffffff;
+}
+/* 16:9标准课件比例容器，居中放置，贴合手机横屏 */
+#container{
+    width: 100vw;
+    height: 56.25vw;
+    max-height: 100vh;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Ruffle播放器铺满容器，原始比例不拉伸 */
+#container ruffle-player{
+    width: 100%;
+    height: 100%;
+}
 </style>
+<!-- 线上Ruffle内核，无需本地wasm -->
+<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 </head>
 <body>
 <div id="container"></div>
@@ -17,9 +43,15 @@ window.onload = async ()=>{
     const ruffle = RufflePlayer.newest();
     const player = ruffle.createPlayer();
     document.getElementById("container").append(player);
+    // 加载同目录下的游标卡尺swf
     await player.load("game.swf");
+    // 播放配置
     player.config.autoplay = true;
     player.config.touchEvents = true;
+    // showAll：完整显示画面、不变形、自动留均匀留白居中（推荐首选）
+    player.config.scale = "showAll";
+    // 可选替换：exactFit 全屏拉伸填满屏幕（会轻微变形，画面更大）
+    // player.config.scale = "exactFit";
 }
 </script>
 </body>
